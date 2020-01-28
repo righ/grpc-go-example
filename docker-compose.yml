@@ -1,7 +1,7 @@
 version: '3.7'
 services:
   grpc-server:
-    image: golang:1.13-stretch
+    build: ./
     container_name: grpc-server
     tty: true
     volumes:
@@ -9,7 +9,7 @@ services:
     working_dir: /root/
 
   grpc-client:
-    image: golang:1.13-stretch
+    build: ./
     container_name: grpc-client
     tty: true
     volumes:

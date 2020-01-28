@@ -8,3 +8,5 @@ unzip -o protoc.zip -d protocfiles
 cp protocfiles/bin/protoc $GOPATH/bin/protoc
 rm -rf protoc.zip protocfiles
 
+go get -u github.com/golang/protobuf/protoc-gen-go
+
