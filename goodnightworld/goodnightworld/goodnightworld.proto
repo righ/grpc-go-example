@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package goodnightworld;
+
+// The greeting service definition.
+service Greeter {
+  // Sends a greeting
+  rpc SayGoodnight (stream GoodnightRequest) returns (stream GoodnightReply) {}
+}
+
+// The request message containing the user's name.
+message GoodnightRequest {
+  string name = 1;
+}
+
+// The response message containing the greetings
+message GoodnightReply {
+  string message = 1;
+}

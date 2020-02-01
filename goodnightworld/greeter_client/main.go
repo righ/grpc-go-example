@@ -1,14 +1,12 @@
 package main
 
 import (
-	"bufio"
 	"context"
-	"fmt"
+	"io"
 	"log"
-	"os"
 	"time"
 
-	pb "github.com/righ/grpc-go-example/goodmorningworld/goodmorningworld"
+	pb "github.com/righ/grpc-go-example/goodnightworld/goodnightworld"
 	"google.golang.org/grpc"
 )
 
@@ -27,26 +25,20 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	stream, err := c.SayGoodmorning(ctx)
+	cli, err := c.SayGoodnight(ctx)
+	cli.Send(&pb.GoodnightRequest{Name: "righ"})
 	if err != nil {
 		log.Fatalf("could not greet: %v", err)
 		return
 	}
-	scanner := bufio.NewScanner(os.Stdin)
-	for scanner.Scan() {
-		name := scanner.Text()
-		if name == "" {
+	for {
+		name, err := cli.Recv()
+		if err == io.EOF {
 			break
 		}
-		if err := stream.Send(&pb.GoodmorningRequest{Name: name}); err != nil {
-			log.Fatalf("Send failed: %v", err)
+		if err != nil {
+			log.Fatalf("could not greet: %v", err)
 		}
-
+		log.Printf("Good night: %s", name)
 	}
-	reply, err := stream.CloseAndRecv()
-	if err != nil {
-		log.Fatalf("could not greet: %v", err)
-		return
-	}
-	fmt.Println(reply.GetMessage())
 }

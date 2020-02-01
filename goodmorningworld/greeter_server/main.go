@@ -1,9 +1,10 @@
 package main
 
 import (
-	"context"
+	"io"
 	"log"
 	"net"
+	"strings"
 
 	pb "github.com/righ/grpc-go-example/goodmorningworld/goodmorningworld"
 	"google.golang.org/grpc"
@@ -19,9 +20,22 @@ type server struct {
 }
 
 // SayGoodmorning implements goodmorningworld.GreeterServer
-func (s *server) SayGoodmorning(ctx context.Context, in *pb.GoodmorningRequest) (*pb.GoodmorningReply, error) {
-	log.Printf("Received: %v", in.GetName())
-	return &pb.GoodmorningReply{Message: "Good morning " + in.GetName()}, nil
+func (s *server) SayGoodmorning(srv pb.Greeter_SayGoodmorningServer) error {
+	names := []string{}
+	for {
+		name, err := srv.Recv()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return err
+		}
+		log.Printf("Received: %s", name)
+		names = append(names, name.GetName())
+	}
+	message := strings.Join(names[:], ",")
+	srv.SendAndClose(&pb.GoodmorningReply{Message: "Good morning " + message + "!"})
+	return nil
 }
 
 func main() {
