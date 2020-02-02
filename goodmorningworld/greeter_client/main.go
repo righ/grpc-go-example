@@ -27,7 +27,7 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
 	defer cancel()
 
-	stream, err := c.SayGoodmorning(ctx)
+	cli, err := c.SayGoodmorning(ctx)
 	if err != nil {
 		log.Fatalf("could not greet: %v", err)
 		return
@@ -38,11 +38,11 @@ func main() {
 		if name == "" {
 			break
 		}
-		if err := stream.Send(&pb.GoodmorningRequest{Name: name}); err != nil {
+		if err := cli.Send(&pb.GoodmorningRequest{Name: name}); err != nil {
 			log.Fatalf("Send failed: %v", err)
 		}
 	}
-	reply, err := stream.CloseAndRecv()
+	reply, err := cli.CloseAndRecv()
 	if err != nil {
 		log.Fatalf("could not greet: %v", err)
 		return
