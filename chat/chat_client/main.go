@@ -30,8 +30,7 @@ func main() {
 	c := pb.NewChatClient(conn)
 
 	ctx := context.Background()
-
-	stream, err := c.Talk(ctx)
+	cli, err := c.Talk(ctx)
 	if err != nil {
 		log.Fatalf("could not talk: %v", err)
 		return
@@ -44,13 +43,13 @@ func main() {
 			if message == "" {
 				break
 			}
-			if err := stream.Send(&pb.MessageRequest{Name: *name, Message: message}); err != nil {
+			if err := cli.Send(&pb.MessageRequest{Name: *name, Message: message}); err != nil {
 				log.Fatalf("Send failed: %v", err)
 			}
 		}
 	}()
 	for {
-		reply, err := stream.Recv()
+		reply, err := cli.Recv()
 		if err == io.EOF {
 			break
 		}

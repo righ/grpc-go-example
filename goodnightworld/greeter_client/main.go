@@ -32,13 +32,13 @@ func main() {
 		return
 	}
 	for {
-		name, err := cli.Recv()
+		reply, err := cli.Recv()
 		if err == io.EOF {
 			break
 		}
 		if err != nil {
 			log.Fatalf("could not greet: %v", err)
 		}
-		log.Printf("Good night: %s", name)
+		log.Println(reply.Message)
 	}
 }
