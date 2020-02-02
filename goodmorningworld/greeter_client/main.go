@@ -41,7 +41,6 @@ func main() {
 		if err := stream.Send(&pb.GoodmorningRequest{Name: name}); err != nil {
 			log.Fatalf("Send failed: %v", err)
 		}
-
 	}
 	reply, err := stream.CloseAndRecv()
 	if err != nil {
