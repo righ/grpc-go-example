@@ -23,15 +23,15 @@ type server struct {
 func (s *server) SayGoodmorning(srv pb.Greeter_SayGoodmorningServer) error {
 	names := []string{}
 	for {
-		name, err := srv.Recv()
+		req, err := srv.Recv()
 		if err == io.EOF {
 			break
 		}
 		if err != nil {
 			return err
 		}
-		log.Printf("Received: %s", name)
-		names = append(names, name.GetName())
+		log.Printf("Received: %s", req)
+		names = append(names, req.GetName())
 	}
 	message := strings.Join(names[:], ",")
 	srv.SendAndClose(&pb.GoodmorningReply{Message: "Good morning " + message + "!"})

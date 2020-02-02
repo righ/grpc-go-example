@@ -19,14 +19,14 @@ type server struct {
 
 // SayGoodnight implements goodnightworld.GreeterServer
 func (s *server) SayGoodnight(srv pb.Greeter_SayGoodnightServer) error {
-	name, err := srv.Recv()
+	req, err := srv.Recv()
 	if err != nil {
 		return err
 	}
-	log.Printf("Received: %s", name)
-	srv.Send(&pb.GoodnightReply{Message: "Good night " + name.GetName() + "!"})
-	srv.Send(&pb.GoodnightReply{Message: "Good night " + name.GetName() + "!"})
-	srv.Send(&pb.GoodnightReply{Message: "Good night " + name.GetName() + "!"})
+	log.Printf("Received: %s", req)
+	srv.Send(&pb.GoodnightReply{Message: "Good night " + req.GetName() + "!"})
+	srv.Send(&pb.GoodnightReply{Message: "Good night " + req.GetName() + "!"})
+	srv.Send(&pb.GoodnightReply{Message: "Good night " + req.GetName() + "!"})
 	return nil
 }
 
