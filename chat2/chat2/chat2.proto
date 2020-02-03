@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package chat2;
+
+service Chat {
+  rpc Talk (stream MessageRequest) returns (stream MessageReply) {}
+  rpc GetMessages (User) returns (stream MessageReply) {}
+  rpc CreateChannel (Null) returns (User) {}
+}
+
+message Null {};
+
+message User {
+  uint64 id = 1;
+}
+
+message MessageRequest {
+  uint64 id = 1;
+  string name = 2;
+  string message = 3;
+}
+
+message MessageReply {
+  string name = 1;
+  string message = 2;
+}
