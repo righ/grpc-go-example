@@ -41,25 +41,14 @@ func main() {
 		log.Fatalf("could not send: %v", err)
 		return
 	}
-	go func() {
-		scanner := bufio.NewScanner(os.Stdin)
-		for scanner.Scan() {
-			message := scanner.Text()
-			if message == "" {
-				continue
-			}
-			if err := cli.Send(&pb.MessageRequest{Id: user.Id, Name: *name, Message: message}); err != nil {
-				log.Fatalf("Send failed: %v", err)
-			}
+	scanner := bufio.NewScanner(os.Stdin)
+	for scanner.Scan() {
+		message := scanner.Text()
+		if message == "" {
+			continue
 		}
-	}()
-	for {
-		_, err := cli.Recv()
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			log.Fatalf("could not chat: %v", err)
+		if err := cli.Send(&pb.MessageRequest{Id: user.Id, Name: *name, Message: message}); err != nil {
+			log.Fatalf("Send failed: %v", err)
 		}
 	}
 }
