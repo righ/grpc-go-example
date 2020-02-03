@@ -31,14 +31,14 @@ func main() {
 	ctx := context.Background()
 	user, err := c.CreateChannel(ctx, &pb.Null{})
 	if err != nil {
-		log.Fatalf("could not talk: %v", err)
+		log.Fatalf("could not send: %v", err)
 		return
 	}
 	go getMessage(c, user.Id)
 
-	cli, err := c.Talk(ctx)
+	cli, err := c.SendMessages(ctx)
 	if err != nil {
-		log.Fatalf("could not talk: %v", err)
+		log.Fatalf("could not send: %v", err)
 		return
 	}
 	go func() {

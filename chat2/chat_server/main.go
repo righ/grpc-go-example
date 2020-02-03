@@ -33,8 +33,7 @@ func (s *server) CreateChannel(_ context.Context, u *pb.Null) (*pb.User, error) 
 	return &pb.User{Id: uint64(serial)}, nil
 }
 
-func (s *server) Talk(srv pb.Chat_TalkServer) error {
-
+func (s *server) SendMessages(srv pb.Chat_SendMessagesServer) error {
 	for {
 		req, err := srv.Recv()
 		if err != nil {
