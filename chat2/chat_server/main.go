@@ -55,12 +55,9 @@ func (s *server) Talk(srv pb.Chat_TalkServer) error {
 }
 
 func (s *server) GetMessages(user *pb.User, srv pb.Chat_GetMessagesServer) error {
-	//lastRead := time.Now()
-
 	for {
 		m := <-channels[user.Id]
 		srv.Send(&pb.MessageReply{Name: m.name, Message: m.text})
-
 	}
 	return nil
 }

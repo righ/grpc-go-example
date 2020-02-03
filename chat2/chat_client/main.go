@@ -54,14 +54,13 @@ func main() {
 		}
 	}()
 	for {
-		reply, err := cli.Recv()
+		_, err := cli.Recv()
 		if err == io.EOF {
 			break
 		}
 		if err != nil {
 			log.Fatalf("could not chat: %v", err)
 		}
-		log.Printf("%s> %s", reply.Name, reply.Message)
 	}
 }
 
