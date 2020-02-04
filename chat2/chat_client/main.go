@@ -29,12 +29,31 @@ func main() {
 	defer conn.Close()
 	c := pb.NewChatClient(conn)
 	ctx := context.Background()
+
 	user, err := c.CreateChannel(ctx, &pb.Null{})
 	if err != nil {
 		log.Fatalf("could not send: %v", err)
 		return
 	}
-	go getMessage(c, user.Id)
+
+	go func() {
+		cli, err := c.GetMessages(context.Background(), &pb.User{Id: user.Id})
+		if err != nil {
+			log.Fatalf("could not get: %v", err)
+			return
+		}
+		for {
+			reply, err := cli.Recv()
+			if err == io.EOF {
+				break
+			}
+			if err != nil {
+				log.Fatalf("Recv failed: %v", err)
+				return
+			}
+			log.Printf("%s> %s", reply.Name, reply.Message)
+		}
+	}()
 
 	cli, err := c.SendMessages(ctx)
 	if err != nil {
@@ -51,22 +70,5 @@ func main() {
 			log.Fatalf("Send failed: %v", err)
 		}
 	}
-}
-
-func getMessage(c pb.ChatClient, uid uint64) error {
-	stream, err := c.GetMessages(context.Background(), &pb.User{Id: uid})
-	if err != nil {
-		return err
-	}
-	for {
-		reply, err := stream.Recv()
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			return err
-		}
-		log.Printf("%s> %s", reply.Name, reply.Message)
-	}
-	return nil
+	cli.CloseAndRecv()
 }

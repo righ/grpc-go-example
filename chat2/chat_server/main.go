@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"io"
 	"log"
 	"net"
 	"time"
@@ -37,6 +38,10 @@ func (s *server) SendMessages(srv pb.Chat_SendMessagesServer) error {
 	for {
 		req, err := srv.Recv()
 		if err != nil {
+			srv.SendAndClose(&pb.Null{})
+			if err == io.EOF {
+				break
+			}
 			return err
 		}
 		name, msg := req.GetName(), req.GetMessage()
@@ -47,18 +52,19 @@ func (s *server) SendMessages(srv pb.Chat_SendMessagesServer) error {
 			if id == req.Id {
 				continue
 			}
-
 			go func(c chan message) { c <- message{name, msg, now} }(c)
 		}
 	}
+	return nil
 }
 
 func (s *server) GetMessages(user *pb.User, srv pb.Chat_GetMessagesServer) error {
 	for {
 		m := <-channels[user.Id]
-		srv.Send(&pb.MessageReply{Name: m.name, Message: m.text})
+		if err := srv.Send(&pb.MessageReply{Name: m.name, Message: m.text}); err != nil {
+			return err
+		}
 	}
-	return nil
 }
 
 func main() {
