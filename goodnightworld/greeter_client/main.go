@@ -25,8 +25,7 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	cli, err := c.SayGoodnight(ctx)
-	cli.Send(&pb.GoodnightRequest{Name: "righ"})
+	cli, err := c.SayGoodnight(ctx, &pb.GoodnightRequest{Name: "righ"})
 	if err != nil {
 		log.Fatalf("could not greet: %v", err)
 		return

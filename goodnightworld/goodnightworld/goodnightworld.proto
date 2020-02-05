@@ -5,7 +5,7 @@ package goodnightworld;
 // The greeting service definition.
 service Greeter {
   // Sends a greeting
-  rpc SayGoodnight (stream GoodnightRequest) returns (stream GoodnightReply) {}
+  rpc SayGoodnight (GoodnightRequest) returns (stream GoodnightReply) {}
 }
 
 // The request message containing the user's name.
